@@ -5,10 +5,13 @@ import subprocess
 import socket
 import threading
 
-
+HEADER = 64
 PORT = 8080
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
+FORMAT = "utf-8"
+DISCONNECT_MSG = "!DROP"
+
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -16,8 +19,9 @@ try:
     server.bind(ADDR)
 except OSError:
     subprocess.call("ps -fA | grep python", shell=True)
-    kill = input("Kill the third number, then we can continue: ")
+    input("Kill the third number, then we can continue (format: kill ____): ")
     server.bind(ADDR)
+
 
 def start():
     server.listen()
@@ -33,7 +37,15 @@ def handle_client(conn, addr):
 
     connected = True
     while connected:
-        msg = conn.recv()
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+        msg_length = int(msg_length)
+        msg = conn.recv(HEADER).decode(FORMAT)
+        if msg == DISCONNECT_MSG:
+            connected = False
+
+        print(f"[{addr}] {msg}")
+    conn.close()
+
 
 
 print("Starting server...")
