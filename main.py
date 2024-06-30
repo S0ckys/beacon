@@ -7,9 +7,11 @@ import threading
 
 HEADER = 64
 PORT = 8080
+
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 FORMAT = "utf-8"
+
 DISCONNECT_MSG = "!DROP"
 
 
@@ -25,6 +27,7 @@ except OSError:
 
 def start():
     server.listen()
+    print(f"Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))

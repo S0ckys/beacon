@@ -1,11 +1,9 @@
 # beacon
 Trying something new
-Commits:
 
-Eric Harwood:
-
-Will Hahn:
-
+Contributors:
+Eric Harwood
+Will Hahn
 Marcello Berger
 
 
