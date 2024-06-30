@@ -4,6 +4,7 @@ import time
 import subprocess
 import socket
 import threading
+import flask
 
 HEADER = 64
 PORT = 8080
@@ -21,13 +22,14 @@ try:
     server.bind(ADDR)
 except OSError:
     subprocess.call("ps -fA | grep python", shell=True)
-    input("Kill the third number, then we can continue (format: kill ____): ")
+    kill = input("Kill the third number, then run again (format: kill ____): ")
+    subprocess.call(str(kill), shell=True)
     server.bind(ADDR)
 
 
 def start():
     server.listen()
-    print(f"Server is listening on {SERVER}")
+    print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
@@ -47,11 +49,11 @@ def handle_client(conn, addr):
             connected = False
 
         print(f"[{addr}] {msg}")
+        return
     conn.close()
 
 
 
-print("Starting server...")
 
 
 def silly_lil_func(num):
@@ -62,6 +64,6 @@ def silly_lil_func(num):
 
 
 if __name__ == "__main__":
-    print(SERVER)
+    print("[STARTING] Server is starting...")
     start()
 
