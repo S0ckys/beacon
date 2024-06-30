@@ -15,7 +15,6 @@ FORMAT = "utf-8"
 
 DISCONNECT_MSG = "!DROP"
 
-
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
@@ -34,7 +33,8 @@ def start():
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+        conn.send(bytes("Welcome to the server!", encoding="utf-8"))
+        print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
 
 
 def handle_client(conn, addr):
@@ -43,10 +43,11 @@ def handle_client(conn, addr):
     connected = True
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
-        msg_length = int(msg_length)
-        msg = conn.recv(HEADER).decode(FORMAT)
-        if msg == DISCONNECT_MSG:
-            connected = False
+        if msg_length:
+            msg_length = int(msg_length)
+            msg = conn.recv(HEADER).decode(FORMAT)
+            if msg == DISCONNECT_MSG:
+                connected = False
 
         print(f"[{addr}] {msg}")
         return
