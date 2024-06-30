@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import subprocess
 import socket
 import threading
 
@@ -10,7 +11,13 @@ SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(ADDR)
+
+try:
+    server.bind(ADDR)
+except OSError:
+    subprocess.call("ps -fA | grep python", shell=True)
+    kill = input("Kill the third number, then we can continue: ")
+    server.bind(ADDR)
 
 def start():
     server.listen()
@@ -21,7 +28,6 @@ def start():
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 
-
 def handle_client(conn, addr):
     print(f"Connection Added: {addr} added")
 
@@ -30,18 +36,17 @@ def handle_client(conn, addr):
         msg = conn.recv()
 
 
+print("Starting server...")
+
+
+def silly_lil_func(num):
+    for idx in range(num):
+        print(idx)
+
+
+
 
 if __name__ == "__main__":
-    try:
-        max = int(input("Let's count! Pick a number: "))
-    except ValueError:
-        max = int(input("Hey! Number, please: "))
-    for i in range(max):
-        print(i)
-        time.sleep(.2)
-    time.sleep(.3)
     print(SERVER)
-    
     start()
 
-print("start server...")
